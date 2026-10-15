@@ -1,0 +1,37 @@
+/* Teatatu Homes — "Listing details" meta box and list table. Admin only. */
+.tth-section { border: 1px solid #dcdcde; border-radius: 4px; padding: 8px 14px 14px; margin: 0 0 14px; }
+.tth-section legend { font-weight: 600; padding: 0 6px; }
+.tth-grid { display: flex; flex-wrap: wrap; gap: 12px 18px; margin-top: 8px; }
+.tth-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 180px; min-width: 0; }
+.tth-field.tth-narrow { flex: 0 1 110px; }
+.tth-field.tth-wide { flex: 2 1 280px; }
+.tth-field.tth-full { margin-top: 8px; }
+.tth-field label, .tth-label { font-weight: 500; }
+.tth-field input[type="text"], .tth-field input[type="url"], .tth-field input[type="email"],
+.tth-field input[type="tel"], .tth-field input[type="number"], .tth-field select { width: 100%; max-width: 100%; }
+.tth-inline { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; }
+.tth-static { padding: 6px 0; color: #50575e; }
+.tth-req { color: #d63638; }
+.tth-opens th { text-align: left; font-weight: 500; padding: 4px 8px 4px 0; }
+.tth-opens td { padding: 2px 8px 2px 0; }
+.tth-box[data-listing="sale"] .tth-rent,
+.tth-box[data-listing="rent"] .tth-sale,
+.tth-box[data-listing=""] .tth-rent { display: none; }
+.column-teatatu_homes_image img { width: 72px; height: 54px; object-fit: cover; border-radius: 3px; }
+.column-teatatu_homes_image { width: 84px; }
+.tth-flag { display: inline-block; margin-top: 4px; padding: 1px 6px; border-radius: 3px; background: #fcf0e3; color: #8a4b0f; font-size: 12px; }
+
+/* Photo manager */
+.tth-photos__list { list-style: none; margin: 4px 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tth-photo { display: flex; align-items: center; gap: 12px; padding: 6px; border: 1px solid #dcdcde; border-radius: 4px; background: #fff; }
+.tth-photo:first-child { border-color: #2271b1; }
+.tth-photo img { width: 80px; height: 60px; object-fit: cover; border-radius: 3px; background: #f0f0f1; flex-shrink: 0; }
+.tth-photo__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.tth-photo__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #50575e; font-size: 12px; }
+.tth-photo__badge { align-self: flex-start; padding: 0 6px; border-radius: 3px; font-size: 11px; font-weight: 600; background: #e7f0e8; color: #1e5e2a; }
+.tth-photo[data-source="link"] .tth-photo__badge { background: #eef2f7; color: #2c4a6b; }
+.tth-photo:first-child .tth-photo__badge::after { content: " · main photo"; font-weight: 400; }
+.tth-photo__actions { display: flex; gap: 10px; align-items: center; }
+.tth-photo__actions .button-link { min-width: 24px; min-height: 24px; text-decoration: none; }
+.tth-photo:first-child [data-tth-photo-up], .tth-photo:last-child [data-tth-photo-down] { visibility: hidden; }
+.tth-photos__add { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }

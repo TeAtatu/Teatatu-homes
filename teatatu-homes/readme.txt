@@ -1,0 +1,75 @@
+=== Teatatu Homes ===
+Contributors: teatatu
+Tags: real estate, property, listings, rentals, te atatu
+Requires at least: 6.0
+Tested up to: 6.8
+Requires PHP: 7.4
+Stable tag: 1.1.0
+License: GPL-3.0
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+
+The data layer for a Te Atatū Peninsula homes site: listings for sale and for rent, with a validated field model, search, enquiries and a draft-only AI-agent role. Display is left to the theme.
+
+== Description ==
+
+Teatatu Homes stores and serves property listings for **Te Atatū Peninsula only**. It deliberately renders nothing on the front end: pair it with the Teatatu Homes theme (or any theme that reads the functions below).
+
+= Data model =
+
+* Post type `teatatu_home` (REST `/wp/v2/homes`, archive `/homes/`). Title = headline, content = full description, excerpt = card summary.
+* Taxonomies:
+  * Listing Type `teatatu_home_listing` — fixed: `sale`, `rent` (`/listing/sale/`, `/listing/rent/`).
+  * Property Type `teatatu_home_type` — House, Townhouse, Unit / apartment, Section (editable).
+  * Area `teatatu_home_area` — fixed: Matipo, Beach, Harbourview (same split and slugs as Teatatu Events).
+  * Features `teatatu_home_feature` — free tags.
+  * Agency `teatatu_home_agency` — with logo, phone, email and website term meta.
+* Fields (post meta `_teatatu_homes_<field>`): status, sale method, price (sale price or weekly rent, whole dollars), price wording override, auction/closing date, rental terms (available from, bond, pets, furnishing, Healthy Homes), bedrooms, bathrooms, car parks, floor and land area, title type, photo URLs, floor plan / video / tour URLs, documents, open homes, agent contact, original listing URL and reference.
+* Address (post meta `_teatatu_homes_addr_<segment>`): unit, number, street, suburb, city, postcode, lat, lng, and a display mode (full, street only, hidden). Suburb, city and postcode are fixed to Te Atatū Peninsula, Auckland 0610. Coordinates outside the Peninsula are rejected.
+* Photos (`photos`, in order, first = main photo) can be **uploaded** or **linked**, mixed freely:
+  * Uploads are Media Library attachments saved in the home's own folder, `wp-content/uploads/homes/<home ID>/`, and attached to the home ("Uploaded to" in the Media Library). A home can only use photos uploaded to it. They are deleted when the home is permanently deleted.
+  * Links are remote image URLs, stored and served as given, never downloaded.
+* Uses only standard WordPress tables.
+
+= One writer, one reader =
+
+* `teatatu_homes_save_fields( $post_id, $fields )` validates and saves a whole listing — the admin form and REST both use it.
+* `teatatu_homes_normalize_item( $post )` returns the display-ready array every consumer reads: price label, public address (respecting the display mode), area, rooms, features, photos (resolved to `url`, `thumb`, `full`, `srcset`, `alt` whether uploaded or linked), upcoming open homes, sale or rental details, agent (no email) and agency.
+
+= Search =
+
+The Homes archive and every Homes taxonomy archive accept these URL parameters, so a theme only needs a GET form:
+
+`listing` (sale|rent), `q`, `price_min`, `price_max`, `beds`, `baths`, `cars`, `type`, `area`, `feature`, `agency` (comma-separated slugs), `open` (weekend|any), `pets` (1), `status`, `sort` (newest|price_asc|price_desc|open).
+
+Only Available and Under offer listings are shown unless `status` says otherwise.
+
+= Theme API =
+
+* `teatatu_homes_normalize_item( $post )`
+* `teatatu_homes_current_filters()`, `teatatu_homes_active_filters( $filters )`, `teatatu_homes_filter_defs()`, `teatatu_homes_sort_options()`, `teatatu_homes_price_steps( $listing )`, `teatatu_homes_format_money( $amount )`
+* `teatatu_homes_latest( $listing, $count )`, `teatatu_homes_search( $filters, $page, $per_page )`
+* `teatatu_homes_area_defs()`, `teatatu_homes_listing_types()`
+* `teatatu_homes_enquiry_action_url()`, `teatatu_homes_enquiry_hidden_fields( $post_id )`, `teatatu_homes_enquiry_status()`, `teatatu_homes_enquiry_message( $status )`
+
+= REST =
+
+* `GET/POST /wp-json/wp/v2/homes` with a `home` field (public item in `view`; raw fields under `home.edit` in `edit` context). Raw meta is not exposed.
+* `GET /wp-json/teatatu-homes/v1/search` — same parameters as the archive, plus `page` and `per_page`.
+* `GET /wp-json/teatatu-homes/v1/vocabulary` — every allowed value.
+
+= Roles =
+
+* `teatatu_homes_agent` — drafts listings over REST, never publishes. See SKILL.md.
+* Administrator and Editor get full Homes capabilities.
+
+= Areas =
+
+If the Teatatu Events plugin is active on the same site, a listing's Area is worked out from its street using Events' street rules. Otherwise an editor ticks it, and listings without one are flagged "Needs Area".
+
+== Changelog ==
+
+= 1.1.0 =
+* Photos can be uploaded to a per-home Media Library folder as well as linked. The `image_urls` field is replaced by `photos`.
+
+= 1.0.0 =
+* First release.
