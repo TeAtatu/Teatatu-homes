@@ -10,7 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Inline stroke icon (decorative: aria-hidden).
+ * Inline outline icon (decorative: aria-hidden). Lucide-style geometry at
+ * the design system's 1.75 stroke on a 24px grid.
  *
  * @param string $name Icon name.
  * @param int    $size Pixel size.
@@ -33,6 +34,8 @@ function tth_icon( $name, $size = 20 ) {
 		'pin'    => '<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
 		'filter' => '<path d="M4 6h16M7 12h10M10 18h4"/>',
 		'close'  => '<path d="M6 6l12 12M18 6 6 18"/>',
+		'alert'  => '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/>',
+		'home'   => '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
 		'photo'  => '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/>',
 	);
 	if ( ! isset( $paths[ $name ] ) ) {
@@ -40,7 +43,7 @@ function tth_icon( $name, $size = 20 ) {
 	}
 	$box = 'logo' === $name ? '0 0 32 32' : '0 0 24 24';
 	return sprintf(
-		'<svg width="%1$d" height="%1$d" viewBox="%2$s" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">%3$s</svg>',
+		'<svg width="%1$d" height="%1$d" viewBox="%2$s" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">%3$s</svg>',
 		(int) $size,
 		esc_attr( $box ),
 		$paths[ $name ]
@@ -338,29 +341,27 @@ function tth_map( $points, $label, $class = '' ) {
 }
 
 /**
- * Header menu fallback when no menu is assigned: Buy, Rent, Open homes and
- * the Areas, built from the plugin's archives.
+ * Section links under the Homes header when no menu is assigned: For sale,
+ * Rentals, Open homes and Sold nearby, built from the plugin's archives.
+ * The current section gets aria-current (underlined in the site colour).
  */
 function tth_primary_menu_fallback() {
-	$links = array();
-	if ( tth_plugin_ready() ) {
-		foreach ( teatatu_homes_listing_types() as $slug => $label ) {
-			$term = get_term_by( 'slug', $slug, 'teatatu_home_listing' );
-			if ( $term ) {
-				$links[] = array( 'sale' === $slug ? __( 'Buy', 'teatatu-homes-theme' ) : __( 'Rent', 'teatatu-homes-theme' ), get_term_link( $term ) );
-			}
+	if ( ! tth_plugin_ready() ) {
+		return;
+	}
+	$filters = ( is_post_type_archive( 'teatatu_home' ) || is_tax( array_keys( teatatu_homes_taxonomy_defs() ) ) ) ? teatatu_homes_current_filters() : null;
+	$links   = array();
+	foreach ( array( 'sale' => __( 'For sale', 'teatatu-homes-theme' ), 'rent' => __( 'Rentals', 'teatatu-homes-theme' ) ) as $slug => $label ) {
+		$term = get_term_by( 'slug', $slug, 'teatatu_home_listing' );
+		if ( $term ) {
+			$links[] = array( $label, get_term_link( $term ), $filters && $slug === $filters['listing'] && '' === $filters['status'] && '' === $filters['open'] );
 		}
-		$links[] = array( __( 'Open homes', 'teatatu-homes-theme' ), tth_filters_url( array( 'open' => 'any', 'sort' => 'open' ), tth_search_url() ) );
 	}
-	$cta = get_theme_mod( 'tth_list_url', '' );
-	echo '<ul>';
+	$links[] = array( __( 'Open homes', 'teatatu-homes-theme' ), tth_filters_url( array( 'open' => 'any', 'sort' => 'open' ), tth_search_url() ), $filters && '' !== $filters['open'] );
+	$links[] = array( __( 'Sold nearby', 'teatatu-homes-theme' ), tth_filters_url( array( 'listing' => 'sale', 'status' => 'sold' ), tth_search_url() ), $filters && 'sold' === $filters['status'] );
 	foreach ( $links as $link ) {
-		printf( '<li><a href="%s">%s</a></li>', esc_url( $link[1] ), esc_html( $link[0] ) );
+		printf( '<a href="%s"%s>%s</a>', esc_url( $link[1] ), $link[2] ? ' aria-current="page"' : '', esc_html( $link[0] ) );
 	}
-	if ( $cta ) {
-		printf( '<li class="tth-nav__cta"><a href="%s">%s</a></li>', esc_url( $cta ), esc_html__( 'List a home', 'teatatu-homes-theme' ) );
-	}
-	echo '</ul>';
 }
 
 /**

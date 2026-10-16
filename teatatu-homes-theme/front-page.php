@@ -17,10 +17,12 @@ $ready        = tth_plugin_ready();
 $search_url   = tth_search_url();
 ?>
 
-<section class="tth-wrap tth-hero">
+<div class="tth-wrap">
+<section class="tal-band tth-hero-band" aria-labelledby="tth-hero-title">
+<div class="tth-hero">
 	<div class="tth-hero__copy">
 		<p class="tth-eyebrow"><?php esc_html_e( 'Te Atatū Peninsula · West Auckland', 'teatatu-homes-theme' ); ?></p>
-		<h1 class="tth-display"><?php esc_html_e( 'Homes on the Peninsula. Nothing else.', 'teatatu-homes-theme' ); ?></h1>
+		<h1 id="tth-hero-title"><?php esc_html_e( 'Homes on the Peninsula. Nothing else.', 'teatatu-homes-theme' ); ?></h1>
 		<p class="tth-lead"><?php esc_html_e( 'Every house, townhouse and unit for sale or rent between the motorway and the harbour — in one place.', 'teatatu-homes-theme' ); ?></p>
 
 		<?php if ( $ready ) : ?>
@@ -50,7 +52,7 @@ $search_url   = tth_search_url();
 						?>
 					</label>
 				</div>
-				<button class="tth-btn tth-btn--block" type="submit"><?php echo tth_icon( 'search' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php esc_html_e( 'Search homes', 'teatatu-homes-theme' ); ?></button>
+				<button class="tal-btn tal-btn-primary tal-btn-block" type="submit"><?php echo tth_icon( 'search' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php esc_html_e( 'Search homes', 'teatatu-homes-theme' ); ?></button>
 			</form>
 
 			<div class="tth-chips">
@@ -61,18 +63,20 @@ $search_url   = tth_search_url();
 		<?php endif; ?>
 	</div>
 
-	<div class="tth-hero__media">
-		<?php if ( $hero_image ) : ?>
+	<?php if ( $hero_image ) : ?>
+		<div class="tth-hero__media">
 			<img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( $hero_alt ); ?>" fetchpriority="high" />
-		<?php endif; ?>
-	</div>
+		</div>
+	<?php endif; ?>
+</div>
 </section>
+</div>
 
 <?php if ( $ready ) : ?>
 	<section class="tth-wrap tth-section" aria-labelledby="tth-latest-heading">
 		<div class="tth-section-head">
 			<div>
-				<h2 id="tth-latest-heading" class="tth-display"><?php esc_html_e( 'Latest on the Peninsula', 'teatatu-homes-theme' ); ?></h2>
+				<h2 id="tth-latest-heading"><?php esc_html_e( 'Latest on the Peninsula', 'teatatu-homes-theme' ); ?></h2>
 				<p><?php esc_html_e( 'New homes for sale and rent.', 'teatatu-homes-theme' ); ?></p>
 			</div>
 			<div class="tth-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Listing type', 'teatatu-homes-theme' ); ?>" data-tth-tabs hidden>
@@ -97,7 +101,7 @@ $search_url   = tth_search_url();
 				<?php else : ?>
 					<div class="tth-empty"><p><?php echo esc_html( 'rent' === $slug ? __( 'No rentals listed right now.', 'teatatu-homes-theme' ) : __( 'No homes for sale listed right now.', 'teatatu-homes-theme' ) ); ?></p></div>
 				<?php endif; ?>
-				<p style="margin-top:16px;"><a class="tth-arrow-link" href="<?php echo esc_url( $all ); ?>"><?php echo esc_html( 'rent' === $slug ? __( 'View all rentals', 'teatatu-homes-theme' ) : __( 'View all homes for sale', 'teatatu-homes-theme' ) ); ?><?php echo tth_icon( 'arrow', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></a></p>
+				<p class="tth-more-link"><a class="tth-arrow-link" href="<?php echo esc_url( $all ); ?>"><?php echo esc_html( 'rent' === $slug ? __( 'View all rentals', 'teatatu-homes-theme' ) : __( 'View all homes for sale', 'teatatu-homes-theme' ) ); ?><?php echo tth_icon( 'arrow', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></a></p>
 			</div>
 		<?php endforeach; ?>
 	</section>
@@ -105,14 +109,14 @@ $search_url   = tth_search_url();
 	<section class="tth-wrap tth-section" aria-labelledby="tth-areas-heading">
 		<div class="tth-section-head">
 			<div>
-				<h2 id="tth-areas-heading" class="tth-display"><?php esc_html_e( 'Find your corner of the Peninsula', 'teatatu-homes-theme' ); ?></h2>
+				<h2 id="tth-areas-heading"><?php esc_html_e( 'Find your corner of the Peninsula', 'teatatu-homes-theme' ); ?></h2>
 				<p><?php esc_html_e( 'Three areas, split by Te Atatū Road, Taikata Road and Harbour View Road.', 'teatatu-homes-theme' ); ?></p>
 			</div>
 		</div>
 		<div class="tth-tiles">
 			<?php foreach ( get_terms( array( 'taxonomy' => 'teatatu_home_area', 'hide_empty' => false ) ) as $area ) : ?>
 				<a class="tth-tile" href="<?php echo esc_url( get_term_link( $area ) ); ?>">
-					<span style="color: var(--tth-accent);"><?php echo tth_icon( 'pin', 28 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></span>
+					<span class="tth-tile__icon"><?php echo tth_icon( 'pin', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></span>
 					<span class="tth-tile__title"><?php echo esc_html( $area->name ); ?></span>
 					<?php if ( $area->description ) : ?>
 						<span class="tth-tile__text"><?php echo esc_html( $area->description ); ?></span>
@@ -132,7 +136,7 @@ $search_url   = tth_search_url();
 <?php endif; ?>
 
 <section class="tth-wrap tth-section" aria-label="<?php esc_attr_e( 'Why use this site', 'teatatu-homes-theme' ); ?>">
-	<div class="tth-values">
+	<div class="tth-panel tth-values">
 		<div>
 			<h3><?php esc_html_e( 'Only the Peninsula', 'teatatu-homes-theme' ); ?></h3>
 			<p><?php esc_html_e( 'No scrolling past other suburbs. If it is listed here, it is on Te Atatū Peninsula.', 'teatatu-homes-theme' ); ?></p>
@@ -149,18 +153,18 @@ $search_url   = tth_search_url();
 </section>
 
 <?php if ( $appraisal || $list_url ) : ?>
-	<section class="tth-wrap tth-section" style="padding-bottom:80px;">
-		<div class="tth-cta">
+	<section class="tth-wrap tth-section">
+		<div class="tal-band tth-cta">
 			<div>
-				<h2 class="tth-display"><?php esc_html_e( 'Selling or renting out a Peninsula home?', 'teatatu-homes-theme' ); ?></h2>
+				<h2><?php esc_html_e( 'Selling or renting out a Peninsula home?', 'teatatu-homes-theme' ); ?></h2>
 				<p><?php esc_html_e( 'List it where Peninsula buyers and tenants are already looking.', 'teatatu-homes-theme' ); ?></p>
 			</div>
 			<div class="tth-cta__actions">
 				<?php if ( $appraisal ) : ?>
-					<a class="tth-btn tth-btn--light" href="<?php echo esc_url( $appraisal ); ?>"><?php esc_html_e( 'Get an appraisal', 'teatatu-homes-theme' ); ?></a>
+					<a class="tal-btn tal-btn-primary" href="<?php echo esc_url( $appraisal ); ?>"><?php esc_html_e( 'Get an appraisal', 'teatatu-homes-theme' ); ?></a>
 				<?php endif; ?>
 				<?php if ( $list_url ) : ?>
-					<a class="tth-btn tth-btn--outline-light" href="<?php echo esc_url( $list_url ); ?>"><?php esc_html_e( 'List a rental', 'teatatu-homes-theme' ); ?></a>
+					<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $list_url ); ?>"><?php esc_html_e( 'List a rental', 'teatatu-homes-theme' ); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>

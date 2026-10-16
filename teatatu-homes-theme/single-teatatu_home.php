@@ -81,6 +81,7 @@ while ( have_posts() ) :
 
 		<?php if ( ! $item['is_active'] ) : ?>
 			<p class="tth-status-banner">
+				<?php echo tth_icon( 'home' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
 				<?php
 				/* translators: %s: status such as Sold or Leased. */
 				echo esc_html( sprintf( __( 'This listing is %s.', 'teatatu-homes-theme' ), strtolower( $item['status_label'] ) ) );
@@ -100,8 +101,8 @@ while ( have_posts() ) :
 				<?php endforeach; ?>
 			</div>
 			<?php if ( count( $images ) > 1 ) : ?>
-				<p style="margin-top:-20px;">
-					<button type="button" class="tth-btn tth-btn--ghost" data-tth-open-gallery="0">
+				<p class="tth-gallery-all">
+					<button type="button" class="tal-btn tal-btn-secondary" data-tth-open-gallery="0">
 						<?php
 						/* translators: %d: number of photos. */
 						echo esc_html( sprintf( __( 'View all %d photos', 'teatatu-homes-theme' ), count( $images ) ) );
@@ -166,7 +167,7 @@ while ( have_posts() ) :
 						<h2 id="tth-features"><?php esc_html_e( 'Features', 'teatatu-homes-theme' ); ?></h2>
 						<ul class="tth-features">
 							<?php foreach ( $item['features'] as $feature ) : ?>
-								<li><span style="color: var(--tth-accent);"><?php echo tth_icon( 'check', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></span><?php echo esc_html( $feature['name'] ); ?></li>
+								<li><span><?php echo tth_icon( 'check', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?></span><?php echo esc_html( $feature['name'] ); ?></li>
 							<?php endforeach; ?>
 						</ul>
 					</section>
@@ -201,16 +202,16 @@ while ( have_posts() ) :
 						<h2 id="tth-docs"><?php esc_html_e( 'Documents and links', 'teatatu-homes-theme' ); ?></h2>
 						<div class="tth-docs">
 							<?php foreach ( $item['documents'] as $doc ) : ?>
-								<a class="tth-btn tth-btn--ghost" href="<?php echo esc_url( $doc['url'] ); ?>" rel="noopener" target="_blank"><?php echo tth_icon( 'doc', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php echo esc_html( $doc['label'] ); ?></a>
+								<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $doc['url'] ); ?>" rel="noopener" target="_blank"><?php echo tth_icon( 'doc', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php echo esc_html( $doc['label'] ); ?></a>
 							<?php endforeach; ?>
 							<?php if ( $item['video_url'] ) : ?>
-								<a class="tth-btn tth-btn--ghost" href="<?php echo esc_url( $item['video_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Video', 'teatatu-homes-theme' ); ?></a>
+								<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $item['video_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Video', 'teatatu-homes-theme' ); ?></a>
 							<?php endif; ?>
 							<?php if ( $item['tour_url'] ) : ?>
-								<a class="tth-btn tth-btn--ghost" href="<?php echo esc_url( $item['tour_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Virtual tour', 'teatatu-homes-theme' ); ?></a>
+								<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $item['tour_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Virtual tour', 'teatatu-homes-theme' ); ?></a>
 							<?php endif; ?>
 							<?php if ( $item['external_url'] ) : ?>
-								<a class="tth-btn tth-btn--ghost" href="<?php echo esc_url( $item['external_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Original listing', 'teatatu-homes-theme' ); ?></a>
+								<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $item['external_url'] ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Original listing', 'teatatu-homes-theme' ); ?></a>
 							<?php endif; ?>
 						</div>
 					</section>
@@ -223,7 +224,7 @@ while ( have_posts() ) :
 						<h2><?php echo esc_html( $item['rental'] ? __( 'Viewings', 'teatatu-homes-theme' ) : __( 'Open homes', 'teatatu-homes-theme' ) ); ?></h2>
 						<?php if ( $item['open_homes'] ) : ?>
 							<?php foreach ( $item['open_homes'] as $slot ) : ?>
-								<div class="tth-slot"><div><strong><?php echo esc_html( $slot['date'] ); ?></strong><span class="tth-muted" style="font-size:14px;"><?php echo esc_html( $slot['time'] ); ?></span></div></div>
+								<div class="tth-slot"><div><strong><?php echo esc_html( $slot['date'] ); ?></strong><span><?php echo esc_html( $slot['time'] ); ?></span></div></div>
 							<?php endforeach; ?>
 						<?php else : ?>
 							<p class="tth-muted"><?php esc_html_e( 'None scheduled. Ask the agent for a private viewing.', 'teatatu-homes-theme' ); ?></p>
@@ -245,14 +246,14 @@ while ( have_posts() ) :
 									<div class="tth-agent__name"><?php echo esc_html( $item['agent']['name'] ); ?></div>
 								<?php endif; ?>
 								<?php if ( $item['agency'] ) : ?>
-									<div class="tth-muted" style="font-size:14px;"><?php echo esc_html( $item['agency']['name'] ); ?></div>
+									<div class="tth-agent__agency"><?php echo esc_html( $item['agency']['name'] ); ?></div>
 								<?php endif; ?>
 							</div>
 						</div>
 					<?php endif; ?>
 
 					<?php if ( $phone ) : ?>
-						<a class="tth-btn tth-btn--ghost" href="tel:<?php echo esc_attr( preg_replace( '/[^\d+]/', '', $phone ) ); ?>" data-tth-reveal="<?php echo esc_attr( $phone ); ?>">
+						<a class="tal-btn tal-btn-secondary" href="tel:<?php echo esc_attr( preg_replace( '/[^\d+]/', '', $phone ) ); ?>" data-tth-reveal="<?php echo esc_attr( $phone ); ?>">
 							<?php echo tth_icon( 'phone', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
 							<span data-tth-reveal-text><?php echo esc_html( $phone ); ?></span>
 						</a>
@@ -261,10 +262,10 @@ while ( have_posts() ) :
 					<?php if ( $item['is_active'] ) : ?>
 						<h2><?php esc_html_e( 'Send an enquiry', 'teatatu-homes-theme' ); ?></h2>
 						<?php if ( $enquiry ) : ?>
-							<p class="tth-notice<?php echo 'sent' === $enquiry ? '' : ' tth-notice--error'; ?>" role="status"><?php echo esc_html( teatatu_homes_enquiry_message( $enquiry ) ); ?></p>
+							<p class="tal-notice <?php echo 'sent' === $enquiry ? 'tal-notice-success' : 'tal-notice-error'; ?>" role="<?php echo 'sent' === $enquiry ? 'status' : 'alert'; ?>"><?php echo tth_icon( 'sent' === $enquiry ? 'check' : 'alert' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><span><?php echo esc_html( teatatu_homes_enquiry_message( $enquiry ) ); ?></span></p>
 						<?php endif; ?>
 						<?php if ( 'sent' !== $enquiry ) : ?>
-							<form method="post" action="<?php echo esc_url( teatatu_homes_enquiry_action_url() ); ?>" style="display:flex;flex-direction:column;gap:14px;">
+							<form method="post" action="<?php echo esc_url( teatatu_homes_enquiry_action_url() ); ?>" class="tth-stack">
 								<?php teatatu_homes_enquiry_hidden_fields( $item['id'] ); ?>
 								<label class="tth-field"><?php esc_html_e( 'Your name', 'teatatu-homes-theme' ); ?>
 									<input class="tth-control" type="text" name="name" autocomplete="name" required />
@@ -278,7 +279,7 @@ while ( have_posts() ) :
 								<label class="tth-field"><?php esc_html_e( 'Message', 'teatatu-homes-theme' ); ?>
 									<textarea class="tth-control" name="message" rows="4" required><?php echo esc_textarea( $item['rental'] ? __( "I'd like to view this rental.", 'teatatu-homes-theme' ) : __( "I'd like more information about this home.", 'teatatu-homes-theme' ) ); ?></textarea>
 								</label>
-								<button class="tth-btn tth-btn--block" type="submit"><?php echo esc_html( $item['rental'] ? __( 'Email the property manager', 'teatatu-homes-theme' ) : __( 'Email the agent', 'teatatu-homes-theme' ) ); ?></button>
+								<button class="tal-btn tal-btn-primary tal-btn-block" type="submit"><?php echo esc_html( $item['rental'] ? __( 'Email the property manager', 'teatatu-homes-theme' ) : __( 'Email the agent', 'teatatu-homes-theme' ) ); ?></button>
 							</form>
 						<?php endif; ?>
 					<?php endif; ?>
@@ -304,8 +305,8 @@ while ( have_posts() ) :
 		$similar         = array_slice( $similar, 0, 3 );
 		if ( $similar ) :
 			?>
-			<section class="tth-block" aria-labelledby="tth-similar" style="padding-top:16px;">
-				<h2 id="tth-similar" class="tth-display" style="font-size:30px;">
+			<section class="tth-block" aria-labelledby="tth-similar">
+				<h2 id="tth-similar" class="tth-h2">
 					<?php
 					echo esc_html(
 						$item['area']

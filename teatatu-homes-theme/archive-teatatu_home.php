@@ -72,7 +72,7 @@ $terms_for = function ( $taxonomy ) {
 				?>
 			</label>
 		<?php endif; ?>
-		<button class="tth-btn" type="submit"><?php echo tth_icon( 'search', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php esc_html_e( 'Search', 'teatatu-homes-theme' ); ?></button>
+		<button class="tal-btn tal-btn-primary" type="submit"><?php echo tth_icon( 'search', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php esc_html_e( 'Search', 'teatatu-homes-theme' ); ?></button>
 
 		<details <?php echo ( $filters['area'] || $filters['feature'] || $filters['open'] || $filters['pets'] || $filters['cars'] || $filters['price_min'] ) ? 'open' : ''; ?>>
 			<summary><?php echo tth_icon( 'filter', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?><?php esc_html_e( 'More filters', 'teatatu-homes-theme' ); ?></summary>
@@ -120,7 +120,7 @@ $terms_for = function ( $taxonomy ) {
 	</form>
 </section>
 
-<section class="tth-wrap tth-section" style="padding-top:32px;">
+<section class="tth-wrap tth-section tth-section--tight">
 	<div class="tth-results__head">
 		<div>
 			<h1 class="tth-display"><?php echo esc_html( tth_results_heading( $filters ) ); ?></h1>
@@ -160,10 +160,10 @@ $terms_for = function ( $taxonomy ) {
 					}
 				}
 				?>
-				<label class="tth-field" style="flex-direction:row;align-items:center;gap:8px;"><?php esc_html_e( 'Sort', 'teatatu-homes-theme' ); ?>
-					<?php tth_select( 'sort', 'tth-sort', teatatu_homes_sort_options(), $filters['sort'], 'style="height:40px;width:auto;"' ); ?>
+				<label class="tth-field tth-field--inline"><?php esc_html_e( 'Sort', 'teatatu-homes-theme' ); ?>
+					<?php tth_select( 'sort', 'tth-sort', teatatu_homes_sort_options(), $filters['sort'], '' ); ?>
 				</label>
-				<noscript><button class="tth-btn tth-btn--ghost" type="submit"><?php esc_html_e( 'Sort', 'teatatu-homes-theme' ); ?></button></noscript>
+				<noscript><button class="tal-btn tal-btn-secondary" type="submit"><?php esc_html_e( 'Sort', 'teatatu-homes-theme' ); ?></button></noscript>
 			</form>
 		</div>
 	</div>
@@ -190,9 +190,9 @@ $terms_for = function ( $taxonomy ) {
 				</nav>
 			<?php else : ?>
 				<div class="tth-empty">
-					<h2 style="font-size:20px;"><?php esc_html_e( 'No homes match this search', 'teatatu-homes-theme' ); ?></h2>
+					<h2><?php esc_html_e( 'No homes match this search', 'teatatu-homes-theme' ); ?></h2>
 					<p class="tth-muted"><?php esc_html_e( 'Try removing a filter or widening the price range.', 'teatatu-homes-theme' ); ?></p>
-					<a class="tth-btn tth-btn--ghost" href="<?php echo esc_url( $base_url ); ?>"><?php esc_html_e( 'Clear all filters', 'teatatu-homes-theme' ); ?></a>
+					<a class="tal-btn tal-btn-secondary" href="<?php echo esc_url( $base_url ); ?>"><?php esc_html_e( 'Clear all filters', 'teatatu-homes-theme' ); ?></a>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -201,7 +201,7 @@ $terms_for = function ( $taxonomy ) {
 		<?php if ( $points ) : ?>
 			<aside class="tth-results__aside" aria-label="<?php esc_attr_e( 'Map', 'teatatu-homes-theme' ); ?>">
 				<?php tth_map( $points, __( 'Map of the homes on this page', 'teatatu-homes-theme' ) ); ?>
-				<p class="tth-muted" style="font-size:14px;"><?php esc_html_e( 'Homes whose address is shown on request are not pinned.', 'teatatu-homes-theme' ); ?></p>
+				<p class="tth-small"><?php esc_html_e( 'Homes whose address is shown on request are not pinned.', 'teatatu-homes-theme' ); ?></p>
 			</aside>
 		<?php endif; ?>
 	</div>

@@ -5,7 +5,7 @@ A homes site for Te Atatū Peninsula: property sales and rentals, nowhere else.
 | Folder | What it is |
 |---|---|
 | [`teatatu-homes/`](teatatu-homes/) | **Plugin: the data.** Listing post type, taxonomies, the validated field and address model, search query, REST API, enquiries, AI-agent role. Renders nothing on the front end. See [`readme.txt`](teatatu-homes/readme.txt) and [`SKILL.md`](teatatu-homes/SKILL.md). |
-| [`teatatu-homes-theme/`](teatatu-homes-theme/) | **Theme: the display.** Home page, search results, listing page. Reads only the plugin's functions. See [`readme.txt`](teatatu-homes-theme/readme.txt). |
+| [`teatatu-homes-theme/`](teatatu-homes-theme/) | **Theme: the display.** Home page, search results, listing page. Reads only the plugin's functions. Styled with the Te Atatū Local design system (Homes = Harakeke green). See [`readme.txt`](teatatu-homes-theme/readme.txt). |
 
 ## Install
 

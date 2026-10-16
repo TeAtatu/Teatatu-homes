@@ -300,7 +300,8 @@ function teatatu_homes_parse_datetime( $value ) {
 }
 
 /**
- * "Sat 8 Nov, 2:00pm" — the display format for open homes and auctions.
+ * "Sat 8 November, 2:00PM" — the display format for open homes and auctions
+ * (the Te Atatū Local NZ date and time style).
  *
  * @param int  $ts        UTC timestamp.
  * @param bool $with_time Include the time.
@@ -310,7 +311,7 @@ function teatatu_homes_format_date( $ts, $with_time = true ) {
 	if ( ! $ts ) {
 		return '';
 	}
-	$date = wp_date( 'D j M', $ts );
+	$date = wp_date( 'D j F', $ts );
 	if ( wp_date( 'Y', $ts ) !== wp_date( 'Y' ) ) {
 		$date .= ' ' . wp_date( 'Y', $ts );
 	}
@@ -318,13 +319,13 @@ function teatatu_homes_format_date( $ts, $with_time = true ) {
 }
 
 /**
- * "2:00pm" / "11:30am".
+ * "2:00PM" / "11:30AM".
  *
  * @param int $ts UTC timestamp.
  * @return string
  */
 function teatatu_homes_format_time( $ts ) {
-	return wp_date( 'g:ia', $ts );
+	return wp_date( 'g:iA', $ts );
 }
 
 /**
@@ -689,7 +690,7 @@ function teatatu_homes_missing_fields( $post_id ) {
  * The headline price string for a listing.
  *
  * Sale: "$1,195,000", "Enquiries over $1,100,000", "Price by negotiation",
- * "Auction · Sat 8 Nov, 2:00pm", "Tender closes Thu 20 Nov, 4:00pm",
+ * "Auction · Sat 8 November, 2:00PM", "Tender closes Thu 20 November, 4:00PM",
  * "Deadline sale · …", "Sold". Rent: "$720 per week", "Leased".
  * A `price_text` override wins while the listing is active.
  *
@@ -744,7 +745,7 @@ function teatatu_homes_upcoming_open_homes( $slots ) {
 		if ( (int) $slot['end'] < time() ) {
 			continue;
 		}
-		$time  = teatatu_homes_format_time( $slot['start'] ) . ' – ' . teatatu_homes_format_time( $slot['end'] );
+		$time  = teatatu_homes_format_time( $slot['start'] ) . '–' . teatatu_homes_format_time( $slot['end'] );
 		$out[] = array(
 			'start' => (int) $slot['start'],
 			'end'   => (int) $slot['end'],

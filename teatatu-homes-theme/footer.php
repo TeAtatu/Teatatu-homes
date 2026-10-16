@@ -12,8 +12,8 @@ $footer_text = get_theme_mod( 'tth_footer_text', '' );
 <footer class="tth-footer">
 	<div class="tth-wrap tth-footer__grid">
 		<div>
-			<p class="tth-footer__title"><?php bloginfo( 'name' ); ?></p>
-			<p style="margin-top:10px;"><?php echo esc_html( $footer_text ? $footer_text : __( 'Homes for sale and rent on Te Atatū Peninsula, Auckland.', 'teatatu-homes-theme' ) ); ?></p>
+			<a class="tal-wordmark" href="<?php echo esc_url( home_url( '/' ) ); ?>">Te Atatū <span><?php esc_html_e( 'Homes', 'teatatu-homes-theme' ); ?></span></a>
+			<p><?php echo esc_html( $footer_text ? $footer_text : __( 'Homes for sale and rent on Te Atatū Peninsula, Auckland.', 'teatatu-homes-theme' ) ); ?></p>
 		</div>
 		<?php if ( tth_plugin_ready() ) : ?>
 			<nav aria-labelledby="tth-footer-browse">
