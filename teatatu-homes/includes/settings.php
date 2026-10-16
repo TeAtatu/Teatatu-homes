@@ -114,7 +114,7 @@ function teatatu_homes_render_settings_page() {
 					<th><label for="th_github_repo"><?php esc_html_e( 'GitHub Repository', 'teatatu-homes' ); ?></label></th>
 					<td>
 						<input type="text" id="th_github_repo" name="github_repo" class="regular-text" value="<?php echo esc_attr( $github_repo ); ?>" placeholder="owner/repo" />
-						<p class="description"><?php esc_html_e( 'Used to check for plugin updates via GitHub Releases.', 'teatatu-homes' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Used to check for updates to the Teatatu Homes plugin and theme via GitHub Releases.', 'teatatu-homes' ); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -139,6 +139,7 @@ function teatatu_homes_render_settings_page() {
 
 		<hr />
 		<h2><?php esc_html_e( 'Updates', 'teatatu-homes' ); ?></h2>
+		<p class="description"><?php esc_html_e( 'Updates install automatically only when "Enable auto-updates" is on for the plugin (Plugins screen) or the theme (Themes screen). Otherwise click Update now when an update is shown. This button checks for both.', 'teatatu-homes' ); ?></p>
 		<p><?php esc_html_e( 'Current version:', 'teatatu-homes' ); ?> <strong><?php echo esc_html( TEATATU_HOMES_VERSION ); ?></strong></p>
 		<form method="post" action="<?php echo esc_url( $post_url ); ?>">
 			<?php wp_nonce_field( 'teatatu_homes_check_updates', 'teatatu_homes_check_updates_nonce' ); ?>

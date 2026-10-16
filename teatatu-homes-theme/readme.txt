@@ -43,3 +43,19 @@ Styled with the Te Atatū Local design system, the shared look of the five Te At
 * The header is the shared NetworkNav: the black strip linking Te Atatū, Events, News, Homes and Market (filter `tth_network_sites` to change addresses), the "Te Atatū Homes" wordmark, search, "List a property", and the section links.
 * style.css lays out the listing pages using only design-system tokens. When the design system changes, re-copy both files rather than editing them here.
 * Font: Plus Jakarta Sans (400, 600, 700, 800) from Google Fonts.
+
+= Updates =
+
+The theme updates itself from the same GitHub release as the Teatatu Homes plugin (repository and token are set in the plugin's Settings > Teatatu Homes; default TeAtatu/Teatatu-homes).
+
+* It compares its own Version in teatatu-homes-theme/style.css at the latest release, so a plugin-only release doesn't offer a theme update.
+* Updates install automatically only when "Enable auto-updates" is on for the theme (Appearance > Themes; Network Admin > Themes on multisite). Otherwise click Update now.
+* Only the teatatu-homes-theme/ folder from the release is installed.
+
+To release: bump Version in style.css (and/or the plugin header), commit, then publish a GitHub release tagged vX.Y.Z.
+
+== Changelog ==
+
+= 1.2.0 =
+* Te Atatū Local design system.
+* GitHub updater for the theme (shares the plugin's release).

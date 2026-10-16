@@ -4,7 +4,7 @@ Tags: real estate, property, listings, rentals, te atatu
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPL-3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,13 @@ Only Available and Under offer listings are shown unless `status` says otherwise
 If the Teatatu Events plugin is active on the same site, a listing's Area is worked out from its street using Events' street rules. Otherwise an editor ticks it, and listings without one are flagged "Needs Area".
 
 == Changelog ==
+
+= 1.2.0 =
+* The plugin and the Teatatu Homes theme both update from the same GitHub release; each compares its own version in that release, so only what changed is offered.
+* Updates install automatically only when "Enable auto-updates" is on for the plugin. When it is off, the update notice still shows and Update now installs it by hand.
+* GitHub token is now also used to download the release, so private repositories update.
+* Fixed: an update from a GitHub release now installs the plugin's own folder instead of the whole repository, which previously deactivated the plugin.
+* Dates use the Te Atatū Local NZ style ("Sat 25 October, 11:00AM–11:30AM").
 
 = 1.1.0 =
 * Photos can be uploaded to a per-home Media Library folder as well as linked. The `image_urls` field is replaced by `photos`.

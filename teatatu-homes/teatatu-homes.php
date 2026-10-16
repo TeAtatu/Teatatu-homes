@@ -3,7 +3,7 @@
  * Plugin Name: Teatatu Homes
  * Plugin URI: https://github.com/TeAtatu/Teatatu-homes
  * Description: The data layer for a Te Atatū Peninsula homes site: a "Homes" listing post type covering property sales and rentals, with Listing Type, Property Type, Area, Feature and Agency taxonomies, a single validated field model (price, rooms, address, open homes, photos uploaded to a per-home Media Library folder or linked), a filtered search query shared by the theme and the REST API, listing enquiries, and a draft-only AI-agent role. Display is left entirely to the theme. Uses only standard WordPress database tables.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: TeAtatu
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TEATATU_HOMES_VERSION', '1.1.0' );
+define( 'TEATATU_HOMES_VERSION', '1.2.0' );
 define( 'TEATATU_HOMES_FILE', __FILE__ );
 define( 'TEATATU_HOMES_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TEATATU_HOMES_URL', plugin_dir_url( __FILE__ ) );

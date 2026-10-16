@@ -21,6 +21,7 @@ define( 'TTH_THEME_VERSION', '1.2.0' );
 
 require_once get_template_directory() . '/inc/template-tags.php';
 require_once get_template_directory() . '/inc/customizer.php';
+require_once get_template_directory() . '/inc/updater.php';
 
 /**
  * Whether the Teatatu Homes plugin is active.
