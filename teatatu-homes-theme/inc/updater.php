@@ -140,22 +140,33 @@ function tth_updater_check( $transient ) {
 	if ( empty( $transient->checked ) ) {
 		return $transient;
 	}
-	$slug = tth_updater_slug();
-	$info = tth_updater_release_info();
-	if ( ! $info || ! version_compare( $info['version'], tth_updater_installed_version(), '>' ) ) {
-		return $transient;
-	}
-	$transient->response[ $slug ] = array(
+	$slug      = tth_updater_slug();
+	$installed = tth_updater_installed_version();
+	$info      = tth_updater_release_info();
+	$newer     = $info && version_compare( $info['version'], $installed, '>' );
+	// Always listed (update or no_update): the Themes screen only offers
+	// "Enable auto-updates" for a non-WordPress.org theme that appears in one.
+	$item = array(
 		'theme'        => $slug,
-		'new_version'  => $info['version'],
+		'new_version'  => $newer ? $info['version'] : $installed,
 		// "View version details" opens this in a modal; GitHub can't be framed, so it's our own page.
 		'url'          => add_query_arg( array( 'action' => 'tth_theme_changelog' ), admin_url( 'admin-ajax.php' ) ),
-		'package'      => $info['package'],
-		'requires'     => $info['requires'],
-		'requires_php' => $info['requires_php'],
+		'package'      => $newer ? $info['package'] : '',
+		'requires'     => $newer ? $info['requires'] : (string) wp_get_theme( $slug )->get( 'RequiresWP' ),
+		'requires_php' => $newer ? $info['requires_php'] : (string) wp_get_theme( $slug )->get( 'RequiresPHP' ),
 	);
-	if ( isset( $transient->no_update[ $slug ] ) ) {
+	if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
+		$transient->response = array();
+	}
+	if ( ! isset( $transient->no_update ) || ! is_array( $transient->no_update ) ) {
+		$transient->no_update = array();
+	}
+	if ( $newer ) {
+		$transient->response[ $slug ] = $item;
 		unset( $transient->no_update[ $slug ] );
+	} else {
+		$transient->no_update[ $slug ] = $item;
+		unset( $transient->response[ $slug ] );
 	}
 	return $transient;
 }

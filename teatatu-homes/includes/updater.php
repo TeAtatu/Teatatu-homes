@@ -147,7 +147,13 @@ function teatatu_homes_release_info() {
 add_filter( 'pre_set_site_transient_update_plugins', 'teatatu_homes_check_for_update' );
 
 /**
- * Populates the update_plugins transient when a newer GitHub release exists.
+ * Reports this plugin in the update_plugins transient: under `response`
+ * when a newer GitHub release exists, otherwise under `no_update`.
+ *
+ * Always listing it matters: for plugins that aren't on WordPress.org,
+ * the Plugins screen only shows the "Enable auto-updates" link when the
+ * plugin appears in one of those two lists. So it is listed as up to date
+ * even when GitHub can't be reached.
  *
  * @param object $transient Existing update_plugins transient.
  * @return object
@@ -157,28 +163,36 @@ function teatatu_homes_check_for_update( $transient ) {
 		return $transient;
 	}
 
-	$info = teatatu_homes_release_info();
-	if ( ! $info || ! version_compare( $info['version'], TEATATU_HOMES_VERSION, '>' ) ) {
-		return $transient;
-	}
-	$remote_version = $info['version'];
+	$info  = teatatu_homes_release_info();
+	$newer = $info && version_compare( $info['version'], TEATATU_HOMES_VERSION, '>' );
 
-	$item = array(
-		'id'            => 'teatatu-homes/teatatu-homes.php',
+	$item = (object) array(
+		'id'            => TEATATU_HOMES_BASENAME,
 		'slug'          => 'teatatu-homes',
 		'plugin'        => TEATATU_HOMES_BASENAME,
-		'new_version'   => $remote_version,
+		'new_version'   => $newer ? $info['version'] : TEATATU_HOMES_VERSION,
 		'url'           => 'https://github.com/' . teatatu_homes_get_github_repo(),
-		'package'       => $info['package'],
+		'package'       => $newer ? $info['package'] : '',
 		'requires'      => teatatu_homes_get_plugin_header( 'RequiresWP' ),
 		'requires_php'  => teatatu_homes_get_plugin_header( 'RequiresPHP' ),
 		'icons'         => array(),
 		'banners'       => array(),
+		'banners_rtl'   => array(),
+		'compatibility' => new stdClass(),
 	);
 
-	$transient->response[ TEATATU_HOMES_BASENAME ] = (object) $item;
-	if ( isset( $transient->no_update[ TEATATU_HOMES_BASENAME ] ) ) {
+	if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
+		$transient->response = array();
+	}
+	if ( ! isset( $transient->no_update ) || ! is_array( $transient->no_update ) ) {
+		$transient->no_update = array();
+	}
+	if ( $newer ) {
+		$transient->response[ TEATATU_HOMES_BASENAME ] = $item;
 		unset( $transient->no_update[ TEATATU_HOMES_BASENAME ] );
+	} else {
+		$transient->no_update[ TEATATU_HOMES_BASENAME ] = $item;
+		unset( $transient->response[ TEATATU_HOMES_BASENAME ] );
 	}
 
 	return $transient;
