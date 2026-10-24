@@ -342,7 +342,8 @@ function tth_map( $points, $label, $class = '' ) {
 
 /**
  * Section links under the Homes header when no menu is assigned: For sale,
- * Rentals, Open homes and Sold nearby, built from the plugin's archives.
+ * Rentals and Open homes, built from the plugin's archives. ("Sold nearby"
+ * is commented out below until sold listings are kept on the site.)
  * The current section gets aria-current (underlined in the site colour).
  */
 function tth_primary_menu_fallback() {
@@ -358,7 +359,7 @@ function tth_primary_menu_fallback() {
 		}
 	}
 	$links[] = array( __( 'Open homes', 'teatatu-homes-theme' ), tth_filters_url( array( 'open' => 'any', 'sort' => 'open' ), tth_search_url() ), $filters && '' !== $filters['open'] );
-	$links[] = array( __( 'Sold nearby', 'teatatu-homes-theme' ), tth_filters_url( array( 'listing' => 'sale', 'status' => 'sold' ), tth_search_url() ), $filters && 'sold' === $filters['status'] );
+	// $links[] = array( __( 'Sold nearby', 'teatatu-homes-theme' ), tth_filters_url( array( 'listing' => 'sale', 'status' => 'sold' ), tth_search_url() ), $filters && 'sold' === $filters['status'] );
 	foreach ( $links as $link ) {
 		printf( '<a href="%s"%s>%s</a>', esc_url( $link[1] ), $link[2] ? ' aria-current="page"' : '', esc_html( $link[0] ) );
 	}
