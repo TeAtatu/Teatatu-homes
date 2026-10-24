@@ -40,7 +40,7 @@ Styled with the Te Atatū Local design system, the shared look of the five Te At
 * assets/css/te-atatu-local-tokens.css — colour (light and dark), type, spacing, radius and shadow tokens, generated from the design system's tokens.json. Do not edit by hand.
 * assets/css/te-atatu-local.css — the design system's tal-* components (NetworkNav, Button, bands, notices, badges), copied unchanged from its bundle.css.
 * <html data-site="homes"> makes every component use the Homes accent, Harakeke green.
-* The header is the shared NetworkNav: the black strip linking Te Atatū, Events, News, Homes and Market (filter `tth_network_sites` to change addresses), the "Te Atatū Homes" wordmark, search, "List a property", and the section links.
+* The header is the shared NetworkNav: the black strip linking Te Atatū and Homes, plus Events, News and Market when the Teatatu Events, News or Market plugin is active on the site or network (filter `tth_network_sites` to change addresses), the "Te Atatū Homes" wordmark, search, "List a property", and the section links.
 * style.css lays out the listing pages using only design-system tokens. When the design system changes, re-copy both files rather than editing them here.
 * Font: Plus Jakarta Sans (400, 600, 700, 800) from Google Fonts.
 
