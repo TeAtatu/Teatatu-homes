@@ -1,0 +1,31 @@
+/*
+ * Teatatu Homes — network shortcodes ([teatatu_homes_network_*]) on the
+ * Master Site. Uses the Te Atatū Local design-system tokens when the site's
+ * theme provides them; the fallbacks match the Homes look (Harakeke green).
+ */
+.thn { --thn-accent: var(--site-homes, #2a7a4b); --thn-accent-ink: var(--site-homes-ink, #fff); --thn-surface: var(--surface-raised, #fff); --thn-sunken: var(--surface-sunken, #fbf1e3); --thn-border: var(--border, #efe2cf); --thn-ink: var(--ink, #161412); --thn-muted: var(--ink-muted, #5a544c); --thn-radius: var(--radius-lg, 16px); display: grid; gap: var(--space-6, 24px); font-family: var(--font-sans, inherit); }
+.thn--grid { grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); }
+.thn--grid.thn--cols-1 { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) {
+	.thn--grid.thn--cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.thn--grid.thn--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.thn--grid.thn--cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.thn--list { gap: var(--space-4, 16px); }
+.thn-card { display: flex; flex-direction: column; background: var(--thn-surface); border: 1px solid var(--thn-border); border-radius: var(--thn-radius); box-shadow: var(--shadow-sm, 0 1px 2px rgba(60,40,20,.06)); overflow: hidden; text-decoration: none; color: var(--thn-ink); transition: box-shadow .2s, transform .2s; min-width: 0; }
+.thn-card:hover { box-shadow: var(--shadow-md, 0 6px 16px rgba(60,40,20,.08)); transform: translateY(-2px); color: var(--thn-ink); }
+.thn-card:focus-visible { outline: 2px solid var(--focus, #0b6a8f); outline-offset: 2px; }
+.thn--list .thn-card { flex-direction: row; flex-wrap: wrap; }
+.thn-media { position: relative; display: block; aspect-ratio: 3 / 2; background: var(--thn-sunken); }
+.thn--list .thn-media { flex: 1 1 220px; aspect-ratio: auto; min-height: 160px; }
+.thn-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.thn-tag { position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--thn-accent); color: var(--thn-accent-ink); }
+.thn-tag--rent { background: var(--thn-ink); color: var(--ink-inverse, #fff); }
+.thn-tag--status { left: auto; right: 12px; background: var(--thn-surface); color: var(--thn-ink); }
+.thn-body { display: flex; flex-direction: column; gap: 4px; padding: var(--space-4, 16px) var(--space-5, 20px) var(--space-5, 20px); flex: 2 1 260px; }
+.thn-price { font-size: 22px; line-height: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.thn-address { font-weight: 600; }
+.thn-specs, .thn-site { font-size: 14px; line-height: 20px; color: var(--thn-muted); }
+.thn-note { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--site-homes-text, #2a7a4b); }
+.thn-empty, .thn-notice { color: var(--thn-muted, #5a544c); }
+@media (prefers-reduced-motion: reduce) { .thn-card { transition: none; } .thn-card:hover { transform: none; } }

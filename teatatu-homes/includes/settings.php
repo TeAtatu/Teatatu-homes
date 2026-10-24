@@ -90,6 +90,7 @@ function teatatu_homes_render_settings_page() {
 	$github_token_is_set = (bool) teatatu_homes_get_option( 'teatatu_homes_github_token', '' );
 	$delete_on_uninstall = (bool) teatatu_homes_get_option( 'teatatu_homes_delete_data_on_uninstall', false );
 	$enquiry_fallback    = teatatu_homes_get_option( 'teatatu_homes_enquiry_fallback_email', '' );
+	$master_site_id      = teatatu_homes_get_master_site_id();
 	// Always the plain admin-post.php — wp-admin/network/admin-post.php does not exist.
 	$post_url = admin_url( 'admin-post.php' );
 
@@ -103,6 +104,23 @@ function teatatu_homes_render_settings_page() {
 			<?php wp_nonce_field( 'teatatu_homes_save_settings', 'teatatu_homes_settings_nonce' ); ?>
 			<input type="hidden" name="action" value="teatatu_homes_save_settings" />
 			<table class="form-table">
+				<?php if ( is_multisite() ) : ?>
+					<tr>
+						<th><label for="th_master_site"><?php esc_html_e( 'Master Site', 'teatatu-homes' ); ?></label></th>
+						<td>
+							<select id="th_master_site" name="master_site_id">
+								<option value="0"><?php esc_html_e( '— None —', 'teatatu-homes' ); ?></option>
+								<?php foreach ( get_sites( array( 'number' => 500 ) ) as $site ) : ?>
+									<option value="<?php echo esc_attr( $site->blog_id ); ?>" <?php selected( $master_site_id, (int) $site->blog_id ); ?>>
+										<?php echo esc_html( $site->blogname ? $site->blogname : $site->domain . $site->path ); ?> (<?php echo esc_html( $site->domain . $site->path ); ?>)
+									</option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'The site (usually the network\'s main site) that can show homes from every site together, using the [teatatu_homes_network_grid], [teatatu_homes_network_list] and [teatatu_homes_network_latest] shortcodes and the /wp-json/teatatu-homes/v1/network-feed endpoint. They show nothing on other sites.', 'teatatu-homes' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Shortcode options: listing="sale|rent" count="6" columns="3" area="matipo,beach" type="house" feature="heat-pump" beds="3" price_max="1200000" open="weekend|any" sort="newest|price_asc|price_desc|open" exclude_sites="2,4" show_photo="true" show_specs="true" show_site="false" link_target="_self|_blank".', 'teatatu-homes' ); ?></p>
+						</td>
+					</tr>
+				<?php endif; ?>
 				<tr>
 					<th><label for="th_enquiry_fallback"><?php esc_html_e( 'Enquiry Fallback Email', 'teatatu-homes' ); ?></label></th>
 					<td>
@@ -183,6 +201,14 @@ function teatatu_homes_handle_save_settings() {
 	$cap = is_multisite() ? 'manage_network_options' : 'manage_options';
 	if ( ! current_user_can( $cap ) ) {
 		wp_die( esc_html__( 'You do not have permission to do that.', 'teatatu-homes' ), 403 );
+	}
+
+	if ( is_multisite() && isset( $_POST['master_site_id'] ) ) {
+		$master_site_id = absint( $_POST['master_site_id'] );
+		if ( 0 === $master_site_id || get_site( $master_site_id ) ) {
+			update_site_option( 'teatatu_homes_master_site_id', $master_site_id );
+			teatatu_homes_bump_network_cache();
+		}
 	}
 
 	if ( isset( $_POST['enquiry_fallback_email'] ) ) {

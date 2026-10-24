@@ -81,7 +81,7 @@ function teatatu_homes_uninstall_cleanup_site( $delete_data ) {
 	}
 }
 
-$teatatu_homes_options = array( 'teatatu_homes_github_repo', 'teatatu_homes_github_token', 'teatatu_homes_delete_data_on_uninstall', 'teatatu_homes_enquiry_fallback_email' );
+$teatatu_homes_options = array( 'teatatu_homes_github_repo', 'teatatu_homes_github_token', 'teatatu_homes_delete_data_on_uninstall', 'teatatu_homes_enquiry_fallback_email', 'teatatu_homes_master_site_id', 'teatatu_homes_network_cache_version' );
 
 if ( is_multisite() ) {
 	$delete_data = (bool) get_site_option( 'teatatu_homes_delete_data_on_uninstall', false );

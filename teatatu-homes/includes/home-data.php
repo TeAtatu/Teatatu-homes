@@ -883,6 +883,7 @@ function teatatu_homes_normalize_item( $post ) {
 		'agency'        => teatatu_homes_agency_data( teatatu_homes_first_term( $id, 'teatatu_home_agency' ) ),
 		'external_url'  => $fields['external_url'],
 		'external_ref'  => $fields['external_ref'],
+		'date_gmt'      => get_post_field( 'post_date_gmt', $post ),
 		'modified_gmt'  => get_post_field( 'post_modified_gmt', $post ),
 	);
 }

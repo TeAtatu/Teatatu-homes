@@ -62,6 +62,16 @@ Only Available and Under offer listings are shown unless `status` says otherwise
 * `teatatu_homes_agent` — drafts listings over REST, never publishes. See SKILL.md.
 * Administrator and Editor get full Homes capabilities.
 
+= Master Site (multisite) =
+
+Network Admin > Settings > Teatatu Homes > Master Site picks the one site — usually the network's main site — that can show homes from every site together. Each site keeps its own listings; nothing is copied.
+
+* Shortcodes (Master Site only; elsewhere they show nothing, or a note for admins): `[teatatu_homes_network_grid]`, `[teatatu_homes_network_list]`, `[teatatu_homes_network_latest]`.
+* Options: `listing="sale|rent"`, `count="6"`, `columns="3"`, `area`, `type`, `feature` (comma-separated slugs), `beds`, `price_max`, `open="weekend|any"`, `sort="newest|price_asc|price_desc|open"`, `exclude_sites="2,4"`, `show_photo`, `show_specs`, `show_site`, `link_target="_self|_blank"`.
+* REST: `GET /wp-json/teatatu-homes/v1/network-feed` with the same filter options returns the same items (404 on other sites).
+* Results are cached for an hour; any change to a home on any site clears the cache.
+* The shortcodes' small stylesheet uses the Te Atatū Local design-system tokens when the Master Site's theme loads them, and falls back to the Homes look otherwise.
+
 = Areas =
 
 If the Teatatu Events plugin is active on the same site, a listing's Area is worked out from its street using Events' street rules. Otherwise an editor ticks it, and listings without one are flagged "Needs Area".
@@ -69,6 +79,7 @@ If the Teatatu Events plugin is active on the same site, a listing's Area is wor
 == Changelog ==
 
 = 1.2.0 =
+* Homes Master Site for multisite: network-wide [teatatu_homes_network_*] shortcodes and the network-feed REST endpoint, like Teatatu News.
 * The plugin and the Teatatu Homes theme are released separately from the same GitHub repository: plugin releases are tagged teatatu-homes-v<version>, theme releases teatatu-homes-theme-v<version>. Each only looks at its own tags, so either can be edited and released without the other.
 * The theme's updates are run by this plugin (includes/theme-updater.php, a standalone copy) because theme code only loads where the theme is active; this keeps its "Enable auto-updates" switch available in Network Admin > Themes. The theme keeps its own copy for when the plugin isn't active.
 * Settings > Teatatu Homes shows the plugin's and theme's versions and auto-update state.

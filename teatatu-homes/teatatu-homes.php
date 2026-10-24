@@ -27,6 +27,7 @@ define( 'TEATATU_HOMES_BASENAME', plugin_basename( __FILE__ ) );
 
 require_once TEATATU_HOMES_DIR . 'includes/capabilities.php';
 require_once TEATATU_HOMES_DIR . 'includes/settings.php';
+require_once TEATATU_HOMES_DIR . 'includes/multisite.php';
 require_once TEATATU_HOMES_DIR . 'includes/post-type.php';
 require_once TEATATU_HOMES_DIR . 'includes/taxonomies.php';
 require_once TEATATU_HOMES_DIR . 'includes/areas.php';
@@ -38,6 +39,7 @@ require_once TEATATU_HOMES_DIR . 'includes/meta-boxes.php';
 require_once TEATATU_HOMES_DIR . 'includes/admin-columns.php';
 require_once TEATATU_HOMES_DIR . 'includes/rest-api.php';
 require_once TEATATU_HOMES_DIR . 'includes/enquiries.php';
+require_once TEATATU_HOMES_DIR . 'includes/network.php';
 require_once TEATATU_HOMES_DIR . 'includes/updater.php';
 require_once TEATATU_HOMES_DIR . 'includes/theme-updater.php';
 
