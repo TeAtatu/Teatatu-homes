@@ -187,31 +187,60 @@ function tth_plugin_file_active( $file ) {
 }
 
 /**
+ * The home URL of a site set as Master Site in another Teatatu plugin
+ * (e.g. teatatu_news_get_master_site_id()), or '' when that plugin isn't
+ * loaded, no Master Site is set, or this isn't a multisite.
+ *
+ * @param string $plugin Plugin key: 'events', 'news' or 'market'.
+ * @return string
+ */
+function tth_master_site_url( $plugin ) {
+	$fn = 'teatatu_' . $plugin . '_get_master_site_id';
+	if ( ! is_multisite() || ! function_exists( $fn ) ) {
+		return '';
+	}
+	$site_id = (int) call_user_func( $fn );
+	return $site_id && get_site( $site_id ) ? get_home_url( $site_id, '/' ) : '';
+}
+
+/**
  * The Te Atatū Local sites for the network strip, in the design system's
- * fixed order. Te Atatū (main) and Homes always show; Events, News and
- * Market show only when their plugin (teatatu-events.php,
- * teatatu-news.php, teatatu-market.php) is active on this site or
- * network-wide. Filter `tth_network_sites` to change addresses (e.g. on a
- * staging network) or the list itself.
+ * fixed order.
+ *
+ * - Te Atatū (main) and Homes always show. Te Atatū links to the network's
+ *   main site; Homes links to this site.
+ * - Events, News and Market show only when their plugin (teatatu-events.php,
+ *   teatatu-news.php, teatatu-market.php) is active on this site or
+ *   network-wide, and link to the Master Site set in that plugin.
+ * - Without a multisite, or with no Master Site set, the public
+ *   teatatu.nz addresses are used.
+ *
+ * Filter `tth_network_sites` to change the addresses or the list.
  *
  * @return array[] key => [label, url]
  */
 function tth_network_sites() {
-	$sites    = array(
-		'main'   => array( __( 'Te Atatū', 'teatatu-homes-theme' ), 'https://teatatu.nz/' ),
+	$main  = is_multisite() ? get_home_url( get_main_site_id(), '/' ) : '';
+	$sites = array(
+		'main'   => array( __( 'Te Atatū', 'teatatu-homes-theme' ), $main ? $main : 'https://teatatu.nz/' ),
 		'events' => array( __( 'Events', 'teatatu-homes-theme' ), 'https://events.teatatu.nz/' ),
 		'news'   => array( __( 'News', 'teatatu-homes-theme' ), 'https://news.teatatu.nz/' ),
 		'homes'  => array( __( 'Homes', 'teatatu-homes-theme' ), home_url( '/' ) ),
 		'market' => array( __( 'Market', 'teatatu-homes-theme' ), 'https://market.teatatu.nz/' ),
 	);
-	$requires = array(
+	$plugins = array(
 		'events' => 'teatatu-events.php',
 		'news'   => 'teatatu-news.php',
 		'market' => 'teatatu-market.php',
 	);
-	foreach ( $requires as $key => $file ) {
+	foreach ( $plugins as $key => $file ) {
 		if ( ! tth_plugin_file_active( $file ) ) {
 			unset( $sites[ $key ] );
+			continue;
+		}
+		$url = tth_master_site_url( $key );
+		if ( $url ) {
+			$sites[ $key ][1] = $url;
 		}
 	}
 	return apply_filters( 'tth_network_sites', $sites );
