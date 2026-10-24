@@ -39,6 +39,7 @@ require_once TEATATU_HOMES_DIR . 'includes/admin-columns.php';
 require_once TEATATU_HOMES_DIR . 'includes/rest-api.php';
 require_once TEATATU_HOMES_DIR . 'includes/enquiries.php';
 require_once TEATATU_HOMES_DIR . 'includes/updater.php';
+require_once TEATATU_HOMES_DIR . 'includes/theme-updater.php';
 
 /**
  * Fired on plugin activation. Handles both single-site and network activation.

@@ -46,16 +46,16 @@ Styled with the Te Atatū Local design system, the shared look of the five Te At
 
 = Updates =
 
-The theme updates itself from the same GitHub release as the Teatatu Homes plugin (repository and token are set in the plugin's Settings > Teatatu Homes; default TeAtatu/Teatatu-homes).
+The theme is released separately from the Teatatu Homes plugin, from the same GitHub repository (TeAtatu/Teatatu-homes; repository and token are set in the plugin's Settings > Teatatu Homes). Theme releases are tagged `teatatu-homes-theme-v<version>`; plugin releases (`teatatu-homes-v<version>`) never offer a theme update, and the reverse.
 
-* It compares its own Version in teatatu-homes-theme/style.css at the latest release, so a plugin-only release doesn't offer a theme update.
+* When the Teatatu Homes plugin is active it runs the theme's update checks (teatatu-homes/includes/theme-updater.php), because WordPress only loads a theme's code where it is active but checks for updates from the main site. This theme's inc/updater.php is a separate copy used only when the plugin isn't active. Neither reads the other's files; keep the two copies in step by hand.
 * Updates install automatically only when "Enable auto-updates" is on for the theme (Appearance > Themes; Network Admin > Themes on multisite). Otherwise click Update now.
 * Only the teatatu-homes-theme/ folder from the release is installed.
 
-To release: bump Version in style.css (and/or the plugin header), commit, then publish a GitHub release tagged vX.Y.Z.
+To release the theme: bump Version in style.css, commit, then publish a GitHub release tagged `teatatu-homes-theme-v<that version>` (e.g. teatatu-homes-theme-v1.2.1).
 
 == Changelog ==
 
 = 1.2.0 =
 * Te Atatū Local design system.
-* GitHub updater for the theme (shares the plugin's release).
+* GitHub updater for the theme, released separately (tags teatatu-homes-theme-v…).

@@ -139,8 +139,29 @@ function teatatu_homes_render_settings_page() {
 
 		<hr />
 		<h2><?php esc_html_e( 'Updates', 'teatatu-homes' ); ?></h2>
-		<p class="description"><?php esc_html_e( 'Updates install automatically only when "Enable auto-updates" is on for the plugin (Plugins screen) or the theme (Themes screen). Otherwise click Update now when an update is shown. This button checks for both.', 'teatatu-homes' ); ?></p>
-		<p><?php esc_html_e( 'Current version:', 'teatatu-homes' ); ?> <strong><?php echo esc_html( TEATATU_HOMES_VERSION ); ?></strong></p>
+		<p class="description"><?php esc_html_e( 'The plugin and the Teatatu Homes theme are released separately from the same GitHub repository (tags teatatu-homes-v… and teatatu-homes-theme-v…). Each installs automatically only when its own "Enable auto-updates" link is on; otherwise click Update now when an update is shown. This button checks for both.', 'teatatu-homes' ); ?></p>
+		<?php
+		$plugin_auto = in_array( TEATATU_HOMES_BASENAME, (array) get_site_option( 'auto_update_plugins', array() ), true );
+		$plugins_url = is_multisite() ? network_admin_url( 'plugins.php' ) : admin_url( 'plugins.php' );
+		?>
+		<p>
+			<?php esc_html_e( 'Teatatu Homes plugin:', 'teatatu-homes' ); ?> <strong><?php echo esc_html( TEATATU_HOMES_VERSION ); ?></strong>
+			· <?php echo $plugin_auto ? esc_html__( 'auto-updates on', 'teatatu-homes' ) : esc_html__( 'auto-updates off', 'teatatu-homes' ); ?>
+			· <a href="<?php echo esc_url( $plugins_url ); ?>"><?php echo $plugin_auto ? esc_html__( 'Turn off in Plugins', 'teatatu-homes' ) : esc_html__( 'Turn on in Plugins', 'teatatu-homes' ); ?></a>
+		</p>
+		<?php
+		$theme_slug = teatatu_homes_theme_slug();
+		if ( $theme_slug ) :
+			$homes_theme = wp_get_theme( $theme_slug );
+			$theme_auto  = in_array( $theme_slug, (array) get_site_option( 'auto_update_themes', array() ), true );
+			$themes_url  = is_multisite() ? network_admin_url( 'themes.php' ) : admin_url( 'themes.php' );
+			?>
+			<p>
+				<?php esc_html_e( 'Teatatu Homes theme:', 'teatatu-homes' ); ?> <strong><?php echo esc_html( $homes_theme->get( 'Version' ) ); ?></strong>
+				· <?php echo $theme_auto ? esc_html__( 'auto-updates on', 'teatatu-homes' ) : esc_html__( 'auto-updates off', 'teatatu-homes' ); ?>
+				· <a href="<?php echo esc_url( $themes_url ); ?>"><?php echo $theme_auto ? esc_html__( 'Turn off in Themes', 'teatatu-homes' ) : esc_html__( 'Turn on in Themes', 'teatatu-homes' ); ?></a>
+			</p>
+		<?php endif; ?>
 		<form method="post" action="<?php echo esc_url( $post_url ); ?>">
 			<?php wp_nonce_field( 'teatatu_homes_check_updates', 'teatatu_homes_check_updates_nonce' ); ?>
 			<input type="hidden" name="action" value="teatatu_homes_check_updates" />

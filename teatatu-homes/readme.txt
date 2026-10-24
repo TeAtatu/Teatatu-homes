@@ -69,7 +69,9 @@ If the Teatatu Events plugin is active on the same site, a listing's Area is wor
 == Changelog ==
 
 = 1.2.0 =
-* The plugin and the Teatatu Homes theme both update from the same GitHub release; each compares its own version in that release, so only what changed is offered.
+* The plugin and the Teatatu Homes theme are released separately from the same GitHub repository: plugin releases are tagged teatatu-homes-v<version>, theme releases teatatu-homes-theme-v<version>. Each only looks at its own tags, so either can be edited and released without the other.
+* The theme's updates are run by this plugin (includes/theme-updater.php, a standalone copy) because theme code only loads where the theme is active; this keeps its "Enable auto-updates" switch available in Network Admin > Themes. The theme keeps its own copy for when the plugin isn't active.
+* Settings > Teatatu Homes shows the plugin's and theme's versions and auto-update state.
 * Updates install automatically only when "Enable auto-updates" is on for the plugin. When it is off, the update notice still shows and Update now installs it by hand.
 * GitHub token is now also used to download the release, so private repositories update.
 * Fixed: an update from a GitHub release now installs the plugin's own folder instead of the whole repository, which previously deactivated the plugin.

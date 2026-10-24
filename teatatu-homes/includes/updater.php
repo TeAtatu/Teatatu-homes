@@ -5,11 +5,14 @@
  * UI using only wp_remote_get() and core update filters — no bundled
  * update library.
  *
- * One GitHub release (latest, tag vX.Y.Z) ships both the plugin and the
- * theme (teatatu-homes-theme has its own updater in inc/updater.php). The
- * tag only points at the release; this updater compares the *plugin's own*
- * Version header in teatatu-homes/teatatu-homes.php at that tag, so a
- * release that only changes the theme never offers a plugin update.
+ * Releases: the plugin and the Teatatu Homes theme live in the same GitHub
+ * repository but are released separately. Plugin releases are tagged
+ * `teatatu-homes-v<version>` (e.g. teatatu-homes-v1.2.1); theme releases are
+ * tagged `teatatu-homes-theme-v<version>`. This updater only looks at the
+ * plugin's own tags, so the theme can be edited, versioned and released
+ * without touching the plugin (and the reverse). The theme's updates are
+ * run from includes/theme-updater.php, a standalone copy that reads nothing
+ * from the theme's files.
  *
  * Installing: automatically only when "Enable auto-updates" is on for the
  * plugin; otherwise the notice shows and an admin clicks Update now.
@@ -78,55 +81,58 @@ function teatatu_homes_fetch_latest_release( $force = false ) {
 		$headers['Authorization'] = 'token ' . $token;
 	}
 
-	$response = wp_remote_get(
-		"https://api.github.com/repos/{$repo}/releases/latest",
-		array(
-			'headers' => $headers,
-			'timeout' => 15,
-		)
-	);
-
-	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+	$body = teatatu_homes_find_release( $repo, 'teatatu-homes-v', $headers );
+	if ( ! $body ) {
 		return false;
 	}
-
-	$body = json_decode( wp_remote_retrieve_body( $response ), true );
-	if ( ! is_array( $body ) ) {
-		return false;
-	}
-
-	// The plugin's own version at this release (not the tag — see above).
-	$body['teatatu_homes_version'] = ! empty( $body['tag_name'] ) ? teatatu_homes_fetch_remote_version( $repo, $body['tag_name'], $headers ) : '';
 
 	set_site_transient( $cache_key, $body, 12 * HOUR_IN_SECONDS );
 	return $body;
 }
 
 /**
- * Reads the Version header of teatatu-homes/teatatu-homes.php at a tag.
+ * Finds the newest published release whose tag is `<prefix><version>`
+ * (drafts and pre-releases are skipped) and adds the version under
+ * `teatatu_homes_version`.
  *
  * @param string $repo    owner/repo.
- * @param string $tag     Release tag.
+ * @param string $prefix  Tag prefix, e.g. 'teatatu-homes-v'.
  * @param array  $headers Request headers (User-Agent, token).
- * @return string Version, or '' if it couldn't be read.
+ * @return array|false Release data, or false if none/failed.
  */
-function teatatu_homes_fetch_remote_version( $repo, $tag, $headers ) {
-	$headers['Accept'] = 'application/vnd.github.raw+json';
-	$response          = wp_remote_get(
-		"https://api.github.com/repos/{$repo}/contents/teatatu-homes/teatatu-homes.php?ref=" . rawurlencode( $tag ),
+function teatatu_homes_find_release( $repo, $prefix, $headers ) {
+	$response = wp_remote_get(
+		"https://api.github.com/repos/{$repo}/releases?per_page=50",
 		array(
 			'headers' => $headers,
 			'timeout' => 15,
 		)
 	);
 	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-		return '';
+		return false;
 	}
-	return preg_match( '/^[ \t\/*#@]*Version:\s*([0-9A-Za-z.\-+]+)/mi', substr( wp_remote_retrieve_body( $response ), 0, 8192 ), $m ) ? $m[1] : '';
+	$releases = json_decode( wp_remote_retrieve_body( $response ), true );
+	if ( ! is_array( $releases ) ) {
+		return false;
+	}
+	$best = false;
+	foreach ( $releases as $release ) {
+		if ( ! is_array( $release ) || ! empty( $release['draft'] ) || ! empty( $release['prerelease'] ) || empty( $release['tag_name'] ) ) {
+			continue;
+		}
+		if ( ! preg_match( '/^' . preg_quote( $prefix, '/' ) . '(\d[0-9A-Za-z.\-+]*)$/', $release['tag_name'], $m ) ) {
+			continue;
+		}
+		if ( ! $best || version_compare( $m[1], $best['teatatu_homes_version'], '>' ) ) {
+			$release['teatatu_homes_version'] = $m[1];
+			$best                             = $release;
+		}
+	}
+	return $best;
 }
 
 /**
- * Release info for this plugin: the plugin's version at the latest release
+ * Release info for this plugin: the version of its newest teatatu-homes-v* release
  * and the download, or null when there's nothing usable.
  *
  * @return array|null {version, package, changelog, url}

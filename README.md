@@ -18,3 +18,15 @@ A homes site for Te Atatū Peninsula: property sales and rentals, nowhere else.
 
 - **The plugin owns the data.** That includes everything about addresses: storage, validation (Peninsula only), Area resolution, the "show address" privacy setting, and every formatted address string.
 - **The theme owns the display.** It never reads post meta and never joins address fields. If the theme needs a value that isn't in `teatatu_homes_normalize_item()`, add it to the plugin first.
+
+## Releasing
+
+The plugin and theme are versioned and released independently from this repository:
+
+| Release | Bump | Tag |
+|---|---|---|
+| Plugin | `Version` in `teatatu-homes/teatatu-homes.php` (and `TEATATU_HOMES_VERSION`) | `teatatu-homes-v<version>`, e.g. `teatatu-homes-v1.2.1` |
+| Theme | `Version` in `teatatu-homes-theme/style.css` (and `TTH_THEME_VERSION`) | `teatatu-homes-theme-v<version>`, e.g. `teatatu-homes-theme-v1.2.1` |
+
+Each updater only looks at its own tags, so releasing one never offers an update for the other. Sites install automatically only where "Enable auto-updates" is on; otherwise they show **Update now**.
+

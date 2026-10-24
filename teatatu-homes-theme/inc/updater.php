@@ -3,30 +3,43 @@
  * Self-hosted GitHub-release-based updater for the theme, mirroring the
  * Teatatu Homes plugin's updater (teatatu-homes/includes/updater.php).
  *
- * One GitHub release (latest, tag vX.Y.Z) ships both the plugin and this
- * theme. The tag only points at the release: the theme's *own* Version
- * header in teatatu-homes-theme/style.css at that tag is compared with the
- * installed version, so a release that only changes the plugin never
- * offers a theme update.
+ * Releases: the theme is released separately from the plugin, from the same
+ * repository, with tags `teatatu-homes-theme-v<version>` (plugin releases use
+ * `teatatu-homes-v<version>` and are ignored here). So the theme can be
+ * edited, versioned and released without touching the plugin.
  *
  * Installing: automatically only when "Enable auto-updates" is on for this
  * theme (Appearance > Themes; Network Admin > Themes on multisite).
  * Otherwise the "update available" notice shows and an admin clicks
  * Update now. The GitHub repository and token come from the plugin's
  * settings (Settings > Teatatu Homes) when the plugin is active.
+ *
+ * Loading: WordPress only runs a theme's functions.php on sites where the
+ * theme is active, but Network Admin > Themes, update checks and WP-Cron
+ * run on the main site. The Teatatu Homes plugin therefore carries its own
+ * copy of this logic (teatatu-homes/includes/theme-updater.php) that runs
+ * everywhere; this file is only the fallback when the plugin is inactive.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+// The Teatatu Homes plugin runs these checks itself (includes/theme-updater.php),
+// because it is loaded on every site and theme code isn't. This copy is the
+// fallback for when the plugin isn't active. (The check must be on a function
+// in another file: this file's own functions already exist before it runs.)
+if ( function_exists( 'teatatu_homes_theme_updater_loaded' ) ) {
+	return;
+}
 
 /**
- * The theme's folder name (its stylesheet/template slug).
+ * This theme's folder name (its stylesheet slug) — taken from where this
+ * file lives, not the current site's active theme.
  *
  * @return string
  */
 function tth_updater_slug() {
-	return get_template();
+	return basename( dirname( __DIR__ ) );
 }
 
 /**
@@ -90,30 +103,42 @@ function tth_updater_release_info( $force = false ) {
 		}
 	}
 
+	// The theme's own releases only: tags `teatatu-homes-theme-v<version>`.
 	$repo     = tth_updater_repo();
-	$response = wp_remote_get( "https://api.github.com/repos/{$repo}/releases/latest", array( 'headers' => tth_updater_headers(), 'timeout' => 15 ) );
+	$response = wp_remote_get( "https://api.github.com/repos/{$repo}/releases?per_page=50", array( 'headers' => tth_updater_headers(), 'timeout' => 15 ) );
 	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 		return null;
 	}
-	$release = json_decode( wp_remote_retrieve_body( $response ), true );
-	if ( ! is_array( $release ) || empty( $release['tag_name'] ) || empty( $release['zipball_url'] ) ) {
+	$releases = json_decode( wp_remote_retrieve_body( $response ), true );
+	if ( ! is_array( $releases ) ) {
+		return null;
+	}
+	$release = null;
+	$version = '';
+	foreach ( $releases as $candidate ) {
+		if ( ! is_array( $candidate ) || ! empty( $candidate['draft'] ) || ! empty( $candidate['prerelease'] ) || empty( $candidate['tag_name'] ) || empty( $candidate['zipball_url'] ) ) {
+			continue;
+		}
+		if ( preg_match( '/^teatatu-homes-theme-v(\d[0-9A-Za-z.\-+]*)$/', $candidate['tag_name'], $m ) && ( '' === $version || version_compare( $m[1], $version, '>' ) ) ) {
+			$release = $candidate;
+			$version = $m[1];
+		}
+	}
+	if ( ! $release ) {
 		return null;
 	}
 
-	$style = wp_remote_get(
+	// Requirements from style.css at that tag (optional; the update still works without them).
+	$requires = '';
+	$requires_php = '';
+	$style    = wp_remote_get(
 		"https://api.github.com/repos/{$repo}/contents/teatatu-homes-theme/style.css?ref=" . rawurlencode( $release['tag_name'] ),
 		array( 'headers' => tth_updater_headers( 'application/vnd.github.raw+json' ), 'timeout' => 15 )
 	);
-	if ( is_wp_error( $style ) || 200 !== (int) wp_remote_retrieve_response_code( $style ) ) {
-		return null;
-	}
-	$head    = substr( wp_remote_retrieve_body( $style ), 0, 8192 );
-	$field   = function ( $name ) use ( $head ) {
-		return preg_match( '/^[ \t\/*#@]*' . preg_quote( $name, '/' ) . ':\s*(.+)$/mi', $head, $m ) ? trim( $m[1] ) : '';
-	};
-	$version = $field( 'Version' );
-	if ( '' === $version ) {
-		return null;
+	if ( ! is_wp_error( $style ) && 200 === (int) wp_remote_retrieve_response_code( $style ) ) {
+		$head         = substr( wp_remote_retrieve_body( $style ), 0, 8192 );
+		$requires     = preg_match( '/^[ \t\/*#@]*Requires at least:\s*(.+)$/mi', $head, $m ) ? trim( $m[1] ) : '';
+		$requires_php = preg_match( '/^[ \t\/*#@]*Requires PHP:\s*(.+)$/mi', $head, $m ) ? trim( $m[1] ) : '';
 	}
 
 	$info = array(
@@ -121,8 +146,8 @@ function tth_updater_release_info( $force = false ) {
 		'package'      => $release['zipball_url'],
 		'changelog'    => isset( $release['body'] ) ? (string) $release['body'] : '',
 		'url'          => isset( $release['html_url'] ) ? $release['html_url'] : 'https://github.com/' . $repo,
-		'requires'     => $field( 'Requires at least' ),
-		'requires_php' => $field( 'Requires PHP' ),
+		'requires'     => $requires,
+		'requires_php' => $requires_php,
 	);
 	set_site_transient( $cache_key, $info, 12 * HOUR_IN_SECONDS );
 	return $info;
@@ -234,6 +259,38 @@ function tth_updater_source_dir( $source, $remote_source, $upgrader, $hook_extra
 		return $desired;
 	}
 	return new WP_Error( 'tth_move_failed', __( 'Could not prepare the Teatatu Homes theme update. Nothing was changed.', 'teatatu-homes-theme' ) );
+}
+
+add_action( 'init', 'tth_updater_ensure_registered', 30 );
+
+/**
+ * Keeps the theme in WordPress's theme update list, which is what makes the
+ * "Enable / Disable auto-updates" link appear for it (Appearance > Themes;
+ * Network Admin > Themes on multisite) — used only when the plugin isn't
+ * active (with the plugin, it lists the theme on every check itself).
+ *
+ * WordPress rebuilds that list from scratch on every update check and only
+ * runs the update code of the theme active on the site doing the check, so
+ * a check run elsewhere drops this theme. When this theme is running and
+ * finds itself missing, it re-saves the list, which runs tth_updater_check()
+ * through core's own filter. Checked at most every ten minutes.
+ */
+function tth_updater_ensure_registered() {
+	$last = (int) get_option( 'tth_updater_ensured', 0 );
+	if ( time() - $last < 10 * MINUTE_IN_SECONDS ) {
+		return;
+	}
+	update_option( 'tth_updater_ensured', time() );
+
+	$slug      = tth_updater_slug();
+	$transient = get_site_transient( 'update_themes' );
+	if ( ! is_object( $transient ) || empty( $transient->checked ) ) {
+		return; // Not built yet: core's own check will run our filter.
+	}
+	if ( ! empty( $transient->response[ $slug ] ) || ! empty( $transient->no_update[ $slug ] ) ) {
+		return;
+	}
+	set_site_transient( 'update_themes', $transient );
 }
 
 add_filter( 'auto_update_theme', 'tth_updater_auto_update_gate', PHP_INT_MAX, 2 );
